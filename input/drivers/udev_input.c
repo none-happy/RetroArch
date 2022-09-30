@@ -77,13 +77,13 @@
 #include "../../verbosity.h"
 
 #if defined(HAVE_XKBCOMMON) && defined(HAVE_KMS)
-#define UDEV_XKB_HANDLING
+#define UDEV_XKB_HANDLING 0
 #endif
 
 /* Force UDEV_XKB_HANDLING for Lakka */
 #ifdef HAVE_LAKKA
 #ifndef UDEV_XKB_HANDLING
-#define UDEV_XKB_HANDLING
+#define UDEV_XKB_HANDLING 0
 #endif
 #endif
 
