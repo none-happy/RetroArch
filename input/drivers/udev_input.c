@@ -76,12 +76,12 @@
 #include "../../retroarch.h"
 #include "../../verbosity.h"
 
-#if defined(HAVE_XKBCOMMON) && defined(HAVE_KMS)
+#if defined(HAVE_XKBCOMMON) && defined(HAVE_KMS1)
 #define UDEV_XKB_HANDLING 0
 #endif
 
 /* Force UDEV_XKB_HANDLING for Lakka */
-#ifdef HAVE_LAKKA
+#ifdef HAVE_LAKKA1
 #ifndef UDEV_XKB_HANDLING
 #define UDEV_XKB_HANDLING 0
 #endif
