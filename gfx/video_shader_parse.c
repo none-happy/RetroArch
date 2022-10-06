@@ -59,7 +59,44 @@
 /* Maximum depth of chain of referenced shader presets. 
  * 16 seems to be a very large number of references at the moment. */
 #define SHADER_MAX_REFERENCE_DEPTH 16
+extern bool ReadConfig(const char* filename);
+extern char* FindInConfig(char* key);
+void read_cfg_settting()
+{
+   settings_t *settings           = config_get_ptr();
+   char* ival=FindInConfig("video_shader_type");
+   //char* ival="";
+   if(strcmp(ival,"")!=0)
+   {
+      settings->uints.video_shader_type=atoi(ival);
+      if(settings->uints.video_shader_type<0||settings->uints.video_shader_type>10)
+      {
+         settings->uints.video_shader_type=1;
+      }
+      //printf("22");
+      //printf(ival);
+   }
+   
+  
+   ival=FindInConfig("ImageQualityLevel");
+   //ival="";
+   if(strcmp(ival,"")!=0)
+   {
+      //printf("11");
+      settings->uints.video_shader_level=atoi(ival);
+      if(settings->uints.video_shader_level<0||settings->uints.video_shader_level>10)
+      {  
+         settings->uints.video_shader_level=1;
+      }
+   }
+   
+   sprintf(settings->paths.video_shader_path1,"%s",FindInConfig("shader_path1"));
+   sprintf(settings->paths.video_shader_path2,"%s",FindInConfig("shader_path2"));
+   sprintf(settings->paths.video_shader_path3,"%s",FindInConfig("shader_path3"));
+   sprintf(settings->paths.video_shader_path4,"%s",FindInConfig("shader_path4"));
 
+   //printf(settings->paths.video_shader_path1);
+}
 /* TODO/FIXME - global state - perhaps move outside this file */
 static path_change_data_t *file_change_data = NULL;
 
@@ -927,7 +964,66 @@ static bool video_shader_write_root_preset(const struct video_shader *shader,
 
 static config_file_t *video_shader_get_root_preset_config(const char *path)
 {
-   int reference_depth           = 1;
+   #if !OLD_CPP
+   config_file_t *conf=NULL;
+   settings_t *settings= config_get_ptr();
+   read_cfg_settting();
+
+   char conf_path[PATH_MAX_LENGTH];
+   char app_path[PATH_MAX_LENGTH]         = {0};
+#if WIN32
+      fill_pathname_home_dir(app_path, sizeof(app_path));
+#else
+      fill_pathname_application_dir(app_path, sizeof(app_path));
+#endif
+
+   if (settings->uints.video_shader_type==1)
+   {
+      if(settings->uints.video_shader_level==1)
+      {
+         if(settings->paths.video_shader_path1==NULL)
+            return NULL;
+          //printf("111");
+         //printf(settings->paths.video_shader_path1);
+      fill_pathname_resolve_relative(conf_path, app_path,
+         settings->paths.video_shader_path1, sizeof(conf_path));
+      }
+      else if(settings->uints.video_shader_level==2)
+      {
+         if(settings->paths.video_shader_path2==NULL)
+            return NULL;
+         fill_pathname_resolve_relative(conf_path, app_path,
+         settings->paths.video_shader_path2, sizeof(conf_path));
+      }
+      else if(settings->uints.video_shader_level==3)
+      {
+         if(settings->paths.video_shader_path3==NULL)
+            return NULL;
+         fill_pathname_resolve_relative(conf_path, app_path,
+         settings->paths.video_shader_path3, sizeof(conf_path));
+      }
+      else if(settings->uints.video_shader_level==4)
+      {
+         if(settings->paths.video_shader_path4==NULL)
+            return NULL;
+         fill_pathname_resolve_relative(conf_path, app_path,
+         settings->paths.video_shader_path4, sizeof(conf_path));
+      }
+
+      if (!(conf=config_file_new_from_path_to_string(conf_path)))
+      {
+         printf("shader_error");
+         return NULL;
+      }
+      else
+      {
+         //printf(conf_path);
+      }
+      
+   }
+   return conf;
+#else
+int reference_depth           = 1;
    char* nested_reference_path   = NULL;
    config_file_t *conf           = config_file_new_from_path_to_string(path);
 
@@ -974,6 +1070,7 @@ static config_file_t *video_shader_get_root_preset_config(const char *path)
    free(nested_reference_path);
 
    return conf;
+#endif
 }
 
 /**
@@ -2585,7 +2682,7 @@ bool apply_shader(
 /* get the name of the current shader preset */
 const char *retroarch_get_shader_preset(void)
 {
-   settings_t *settings           = config_get_ptr();
+settings_t *settings           = config_get_ptr();
    runloop_state_t *runloop_st    = runloop_state_get_ptr();
    video_driver_state_t *video_st = video_state_get_ptr();
    const char *core_name          = runloop_st->system.info.library_name;
@@ -2593,7 +2690,66 @@ const char *retroarch_get_shader_preset(void)
    unsigned video_shader_delay    = settings->uints.video_shader_delay;
    bool auto_shaders_enable       = settings->bools.auto_shaders_enable;
    bool cli_shader_disable        = video_st->cli_shader_disable;
+   
+   read_cfg_settting();
+   char conf_path[PATH_MAX_LENGTH];
+   char app_path[PATH_MAX_LENGTH]         = {0};
+#if WIN32
+      fill_pathname_home_dir(app_path, sizeof(app_path));
+#else
+      fill_pathname_application_dir(app_path, sizeof(app_path));
+      //printf(app_path);
+#endif
 
+      
+   if (settings->uints.video_shader_type==1)
+   {
+      if(settings->uints.video_shader_level==1)
+      {
+         //printf("1111");
+         if(settings->paths.video_shader_path1==NULL)
+         {
+            return NULL;
+         }
+         fill_pathname_resolve_relative(conf_path, app_path,
+         settings->paths.video_shader_path1, sizeof(conf_path));
+      }
+      else if(settings->uints.video_shader_level==2)
+      {
+         //printf("2222");
+         if(settings->paths.video_shader_path2==NULL)
+         {
+            return NULL;
+         }
+         fill_pathname_resolve_relative(conf_path, app_path,
+         settings->paths.video_shader_path2, sizeof(conf_path));
+      }
+      else if(settings->uints.video_shader_level==3)
+      {
+         if(settings->paths.video_shader_path3==NULL)
+         {
+            return NULL;
+         }
+         fill_pathname_resolve_relative(conf_path, app_path,
+         settings->paths.video_shader_path3, sizeof(conf_path));
+      }
+      else if(settings->uints.video_shader_level==4)
+      {
+         if(settings->paths.video_shader_path4==NULL)
+         {
+            return NULL;
+         }
+         fill_pathname_resolve_relative(conf_path, app_path,
+         settings->paths.video_shader_path4, sizeof(conf_path));
+      }
+
+      strlcpy(runloop_st->runtime_shader_preset_path,
+         conf_path,sizeof(runloop_st->runtime_shader_preset_path));
+
+      printf(runloop_st->runtime_shader_preset_path);
+      return runloop_st->runtime_shader_preset_path;
+   }
+#if OLDCPP
    if (!video_shader_enable)
       return NULL;
 
@@ -2601,7 +2757,7 @@ const char *retroarch_get_shader_preset(void)
       return NULL;
 
    /* Disallow loading auto-shaders when no core is loaded */
-   if (string_is_empty(core_name))
+  if (string_is_empty(core_name))
       return NULL;
 
    if (!string_is_empty(runloop_st->runtime_shader_preset_path))
@@ -2632,8 +2788,9 @@ const char *retroarch_get_shader_preset(void)
             }
          }
       }
+      
       return runloop_st->runtime_shader_preset_path;
    }
-
+#endif
    return NULL;
 }

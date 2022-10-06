@@ -24,7 +24,7 @@
 
 RETRO_BEGIN_DECLS
 
-#define MAX_USERS                      16
+#define MAX_USERS                      5
 
 #define MAX_INPUT_DEVICES              16
 

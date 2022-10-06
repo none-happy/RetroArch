@@ -53,6 +53,7 @@ struct wiiupro
    struct wiiupro_buttons btn;
 };
 
+
 struct hidpad_wiiupro_data
 {
    struct pad_connection* connection;
@@ -79,8 +80,8 @@ static void hidpad_wiiupro_send_control(struct hidpad_wiiupro_data* device)
 static void* hidpad_wiiupro_init(void *data,
       uint32_t slot, hid_driver_t *driver)
 {
-   struct pad_connection* connection  = (struct pad_connection*)data;
-   struct hidpad_wiiupro_data* device = (struct hidpad_wiiupro_data*)
+   struct pad_connection* connection = (struct pad_connection*)data;
+   struct hidpad_wiiupro_data* device    = (struct hidpad_wiiupro_data*)
       calloc(1, sizeof(struct hidpad_wiiupro_data));
 
    if (!device)
@@ -89,9 +90,9 @@ static void* hidpad_wiiupro_init(void *data,
    if (!connection)
       goto error;
 
-   device->connection        = connection;
-   device->slot              = slot;
-   device->driver            = driver;
+   device->connection = connection;
+   device->slot       = slot;
+   device->driver     = driver;
 
    device->calib.calib_round = 0;
    /* Without this, the digital buttons won't be reported. */

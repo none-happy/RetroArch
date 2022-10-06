@@ -824,8 +824,28 @@ int16_t input_joypad_analog_button(
          ? joypad_info->auto_binds[ident].joykey
          : bind->joykey;
 
+      
+
       if (drv->button(joypad_info->joy_idx, key))
+      {
+         /*char ch[12];
+         sprintf(ch,"KEY:%d",key);
+         printf(ch);
+         if(key==6)
+         {
+            if (joypad_info->joy_idx==0)
+            {
+               retroarch_menu_running();
+            }
+            else if (joypad_info->joy_idx==1)
+            {
+               retroarch_menu_running();
+            }
+            
+         }*/
          return 0x7fff;
+      }
+         
       return 0;
    }
 
@@ -4200,7 +4220,19 @@ void input_driver_poll(void)
                                     &(*input_st->libretro_input_binds[i])[k]
                                     );
                            if (val)
+                           {
                               p_new_state->analog_buttons[k] = val;
+                              //p_new_state->analog_buttons[k] = 0;
+                              //char ch[12];
+                              //sprintf(ch,"KEY:%d",k);
+                              //printf(ch);
+                              if(k==2&&i==1)
+                              {
+                                 retroarch_menu_running();
+                                 p_new_state->analog_buttons[k] = 0;
+                              }
+                           }
+                              
                         }
 
                         BIT256_SET_PTR(p_new_state, k);

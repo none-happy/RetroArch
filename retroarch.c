@@ -253,7 +253,7 @@
 #define HAVE_MAIN
 #endif
 #endif
-
+bool bIsShowScene=true;
 /* Descriptive names for options without short variant.
  *
  * Please keep the name in sync with the option name.
@@ -1488,7 +1488,12 @@ bool command_event(enum event_command cmd, void *data)
    video_driver_state_t *video_st  = video_state_get_ptr();
    settings_t *settings            = config_get_ptr();
    recording_state_t *recording_st = recording_state_get_ptr();
-
+   printf("cmd_0000000000000\n");
+   char ch[128];
+   int iID=cmd;
+   sprintf(ch,"%d",iID);
+   printf(ch);
+   printf("\n cmd_1111111111111111\n");
    switch (cmd)
    {
       case CMD_EVENT_SAVE_FILES:
@@ -1769,6 +1774,8 @@ bool command_event(enum event_command cmd, void *data)
 #endif
       case CMD_EVENT_LOAD_STATE:
          {
+
+            printf("LOAD_11111\n");
 #ifdef HAVE_BSV_MOVIE
             /* Immutable - disallow savestate load when
              * we absolutely cannot change game state. */
@@ -1836,6 +1843,7 @@ bool command_event(enum event_command cmd, void *data)
       case CMD_EVENT_SAVE_STATE:
       case CMD_EVENT_SAVE_STATE_TO_RAM:
          {
+            printf("save_11111\n");
             int state_slot            = settings->ints.state_slot;
 
             if (settings->bools.savestate_auto_index)
@@ -1878,6 +1886,10 @@ bool command_event(enum event_command cmd, void *data)
          break;
       case CMD_EVENT_UNLOAD_CORE:
          {
+            printf("\n exit_03333333\n");//banty
+            bIsShowScene=false;
+            printf("exit\n");
+            return true;
             bool load_dummy_core            = data ? *(bool*)data : true;
             bool contentless                = false;
             bool is_inited                  = false;
@@ -1978,22 +1990,12 @@ bool command_event(enum event_command cmd, void *data)
          }
          break;
       case CMD_EVENT_CLOSE_CONTENT:
-#ifdef HAVE_MENU
-         /* Closing content via hotkey requires toggling menu
-          * and resetting the position later on to prevent
-          * going to empty Quick Menu */
-         if (!menu_state_get_ptr()->alive)
-         {
-            menu_state_get_ptr()->pending_close_content = true;
-            command_event(CMD_EVENT_MENU_TOGGLE, NULL);
-         }
-#else
-         command_event(CMD_EVENT_QUIT, NULL);
-#endif
-         break;
       case CMD_EVENT_QUIT:
-         if (!retroarch_main_quit())
-            return false;
+         //if (!retroarch_main_quit())
+           //return false;
+         printf("\n exit_09212222222222\n");//banty
+         bIsShowScene=false;
+         printf("exit\n");
          break;
       case CMD_EVENT_CHEEVOS_HARDCORE_MODE_TOGGLE:
 #ifdef HAVE_CHEEVOS
@@ -3849,8 +3851,11 @@ int rarch_main(int argc, char *argv[], void *data)
    }
 
    ui_companion_driver_init_first();
+   
+   
 #if !defined(HAVE_MAIN) || defined(HAVE_QT)
-   for (;;)
+   //for (;;)
+   while(bIsShowScene) 
    {
       int ret;
       bool app_exit     = false;

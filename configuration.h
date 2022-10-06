@@ -244,6 +244,8 @@ typedef struct settings
       unsigned video_overscan_correction_bottom;
 #endif
       unsigned video_shader_delay;
+      unsigned video_shader_type;
+      unsigned video_shader_level;
 #ifdef HAVE_SCREENSHOTS
       unsigned notification_show_screenshot_duration;
       unsigned notification_show_screenshot_flash;
@@ -523,6 +525,11 @@ typedef struct settings
       char directory_bottom_assets[PATH_MAX_LENGTH];
 #endif
       char log_dir[PATH_MAX_LENGTH];
+      
+      char video_shader_path1[255];
+      char video_shader_path2[255];
+      char video_shader_path3[255];
+      char video_shader_path4[255];
    } paths;
 
    bool modified;

@@ -2182,6 +2182,8 @@ static struct config_uint_setting *populate_settings_uint(
    SETTING_UINT("video_layout_selected_view",   &settings->uints.video_layout_selected_view, true, 0, false);
 #endif
    SETTING_UINT("video_shader_delay",           &settings->uints.video_shader_delay, true, DEFAULT_SHADER_DELAY, false);
+   SETTING_UINT("video_shader_type",           &settings->uints.video_shader_type, true, DEFAULT_SHADER_TYPE, false);
+   SETTING_UINT("video_shader_level",           &settings->uints.video_shader_level, true, DEFAULT_SHADER_LEVEL, false);
 #ifdef HAVE_COMMAND
    SETTING_UINT("network_cmd_port",             &settings->uints.network_cmd_port,    true, network_cmd_port, false);
 #endif
@@ -5871,4 +5873,231 @@ void rarch_config_init(void)
    if (config_st)
       return;
    config_st = (settings_t*)calloc(1, sizeof(settings_t));
+}
+
+#define MaxLineSize 4096
+#define MaxKeySize 256
+#define COMMENT_CHAR '\r'
+char* m_filenam = "";
+
+char key[512][128];
+char value[512][128];
+
+char g_chTem[128];
+char g_chTem1[256];
+char line[256];
+int iMax_key = 0;
+bool IsSpace(char c)
+{
+	if (c == ' ' || c == '\t')
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+bool IsCommentChar(char c)
+{
+	if (c == COMMENT_CHAR)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+char * substr_s(char* line, int istart, int inum)
+{
+	for (int i = istart; i < istart + inum; i++)
+	{
+		g_chTem[i - istart] = line[i];
+	}
+	return g_chTem;
+}
+// trim函数的作用是把一个字符串左边和右边的空格去掉，即为trim
+void Trim(char* str) // 引用传参，这样在函数中修改该参数也会修改相应的变�?
+{
+	if (str==NULL)
+	{
+		return;
+	}
+	int iLen = strlen(str);
+	int i, start_pos, end_pos;
+	for (i = 0; i < iLen; i++)
+	{
+		if (!IsSpace(str[i]))
+		{
+			break;//跳出
+		}
+	}
+	if (i == iLen)//如果该行全是空格，则该行最后一个字符为"\n"，此时i == str.size()
+	{
+		str = "";
+		return;
+	}
+	start_pos = i; // 获取到非空格的初始位�?
+
+	for (i = iLen - 1; i >= 0; i--)
+	{
+		if (!IsSpace(str[i]))
+		{
+			break;
+		}
+	}
+	end_pos = i;
+	//str = str.substr_s(start_pos, end_pos - start_pos + 1);
+
+	str = substr_s(str,start_pos, end_pos - start_pos + 1);
+}
+int getCharPos(const char* line,char cFindC)
+{
+	int iLen = strlen(line);
+	for (int i = 0; i < iLen; i++)
+	{
+		if (line[i] == cFindC)
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+void strncpy_(char* coutchar,  char* cinchar,int iSize)
+{
+	for (int i = 0; i < iSize;i++)
+	{
+		char ch = cinchar[i];
+		coutchar[i] = ch;
+	}
+}
+bool AnalyseLine(const char* line, char* key, char* value) // 分析一行，如果是注释行，则不处理，如果是k-v行，则提取出key-value值�?
+{
+	if (line==NULL)
+	{
+		return false;
+	}
+	//int start_pos = 0, end_pos = line.size() - 1, pos;
+	int start_pos = 0, end_pos = strlen(line) - 1, pos;
+	if ((pos = getCharPos(line,COMMENT_CHAR)) != -1)
+	{
+		if (0 == pos)
+		{
+			return false; // 如果一行的开头是#,说明是注释，�?不需�?
+		}
+		end_pos = pos - 1; // 參�昳�释在k-v后的情况--------------
+	}
+	//char* new_line = line.substr_s(start_pos, end_pos - start_pos + 1); // 删掉后半部分的注�?FIX_ME�?这里应该是减错了�?
+	char* new_line = substr_s(line, start_pos, end_pos - start_pos + 1);
+	// 下面pos的赋值时必要的，这样，就可在后面得到Key和value值了�?
+	if ((pos = getCharPos(new_line,'=')) == -1) //说明前面没有 = �?
+	{
+		return false;
+	}
+	strncpy(key, new_line, pos);
+	new_line += pos+2;
+	strncpy(value, new_line, end_pos + 1 - (pos + 1)-2);
+
+	Trim(key);
+	if (key==NULL)
+	{
+		return false;
+	}
+	Trim(value); // 因为这里的key和value都是引用传递，可以直接被修改，所以不用返�?
+	return true;
+}
+char* getCha(char* buffer)
+{
+	for (int i = 0; i < 256;i++)
+	{
+		g_chTem1[i] = '0';
+	}
+	int i = 0;
+	while (buffer[i]!='\n')
+	{
+		g_chTem1[i] = buffer[i++];
+	}
+	return g_chTem1;
+}
+void DoKeyAndVal(char*  cBuffer)
+{
+	char* pBuffer = cBuffer;
+	int ipos = 0;
+	int ilen = 0;
+	while ((ipos = getCharPos(pBuffer, '\n')) != -1)
+	{
+		strncpy(line, pBuffer, ipos);
+
+		if (!AnalyseLine(line, key[iMax_key], value[iMax_key]))
+		{
+
+		}
+		iMax_key++;
+		pBuffer += ipos+1;
+	}
+}
+bool ReadConfig(const char*  filename)
+{
+   //printf("start");
+	m_filenam = filename;
+
+   printf(m_filenam);
+
+	//m_arrm.clear(); // 删除map容器中的所有k-v�?
+	//std::ifstream infile(m_filenam.c_str());
+	FILE* fp = NULL;
+	fp = fopen(m_filenam, "rb");
+
+	if (!fp)
+	{
+		//cout << "file open failed!" << endl; // 文件打开失败，返回错误信息�?
+      printf("error");
+		return false;
+	}
+
+   //printf("suc");
+
+	rewind(fp);
+	///获取长度
+	long length = 0;
+	fseek(fp, 0, SEEK_END);
+	length = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
+
+	char  buf[4096*20];
+
+	memset(buf, 0, length + 1);
+	int readb = fread(buf, length, 1, fp);
+	if (readb != 1)
+	{
+		fclose(fp);
+		fp = NULL;
+		return false;
+	}
+	DoKeyAndVal(buf);
+	
+	if (fp != NULL)
+	{
+		fclose(fp);
+		fp = NULL;
+	}
+	return true;
+}
+char* FindInConfig(char*  cFindkey) // 注意：之前用的一直都是string类型，所以这里用的也是string key,而不是char key�?
+{
+	//char* str = "";
+
+	if (iMax_key==0)
+	{
+		return "";
+	}
+	for (int i = 0; i < iMax_key;i++)
+	{
+		if (strcmp(key[i],cFindkey)==0)
+		{
+			return value[i];
+		}
+	}
+	return "";
 }

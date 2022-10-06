@@ -39,6 +39,9 @@
 
 #define MAX_INCLUDE_DEPTH 16
 
+extern bool ReadConfig(const char* filename);
+extern char* FindInConfig(char* key);
+
 struct config_include_list
 {
    char *path;
@@ -965,11 +968,51 @@ static struct config_entry_list *config_get_entry_internal(
 
    return NULL;
 }
-
-struct config_entry_list *config_get_entry(
+struct config_entry_list *config_get_entry2(
       const config_file_t *conf, const char *key)
 {
    return RHMAP_GET_STR(conf->entries_map, key);
+}
+bool bIsRead=true;
+struct config_entry_list *config_get_entry(
+      const config_file_t *conf, const char *key)
+{
+   //banty
+
+   struct config_entry_list *entry=config_get_entry2(conf, key);
+   if (bIsRead)
+   {
+      bIsRead=false;
+      char conf_path[PATH_MAX_LENGTH];
+      char app_path[PATH_MAX_LENGTH]         = {0};
+#if WIN32
+      fill_pathname_home_dir(app_path, sizeof(app_path));
+#else
+      fill_pathname_application_dir(app_path, sizeof(app_path));
+#endif
+
+      fill_pathname_resolve_relative(conf_path, app_path,
+         "autokey.cfg", sizeof(conf_path));
+
+      //printf(conf_path);
+
+      //printf("11111");
+
+      ReadConfig(conf_path);
+   }
+   if(entry!=NULL)
+   {
+      char* ival=FindInConfig((char*)key);
+      //char* ival="";
+      if(strcmp(ival,"")!=0)
+      {
+         free(entry->value);
+         entry->value=NULL;
+         entry->value=(char*)malloc(100*sizeof(char));
+         sprintf(entry->value,"%s",ival);
+      }
+   }
+   return entry;
 }
 
 /**

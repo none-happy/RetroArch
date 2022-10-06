@@ -461,7 +461,8 @@
 #define DEFAULT_VIDEO_SHADER_PRESET_SAVE_REFERENCE_ENABLE true
 
 #define DEFAULT_SHADER_DELAY 0
-
+#define DEFAULT_SHADER_TYPE 0
+#define DEFAULT_SHADER_LEVEL 0
 /* Only scale in integer steps.
  * The base size depends on system-reported geometry and aspect ratio.
  * If video_force_aspect is not set, X/Y will be integer scaled independently.

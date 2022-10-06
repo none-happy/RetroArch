@@ -76,17 +76,16 @@
 #include "../../retroarch.h"
 #include "../../verbosity.h"
 
-#if defined(HAVE_XKBCOMMON) && defined(HAVE_KMS1)
-#define UDEV_XKB_HANDLING 0
+/*#if defined(HAVE_XKBCOMMON) && defined(HAVE_KMS)
+#define UDEV_XKB_HANDLING
 #endif
 
-/* Force UDEV_XKB_HANDLING for Lakka */
-#ifdef HAVE_LAKKA1
+#ifdef HAVE_LAKKA
 #ifndef UDEV_XKB_HANDLING
-#define UDEV_XKB_HANDLING 0
+#define UDEV_XKB_HANDLING
 #endif
 #endif
-
+*/
 #define UDEV_MAX_KEYS (KEY_MAX + 7) / 8
 
 typedef struct udev_input udev_input_t;
