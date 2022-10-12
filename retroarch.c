@@ -1516,12 +1516,12 @@ bool command_event(enum event_command cmd, void *data)
    video_driver_state_t *video_st  = video_state_get_ptr();
    settings_t *settings            = config_get_ptr();
    recording_state_t *recording_st = recording_state_get_ptr();
-   printf("cmd_0000000000000\n");
-   char ch[128];
-   int iID=cmd;
-   sprintf(ch,"%d",iID);
-   printf(ch);
-   printf("\n cmd_1111111111111111\n");
+   //printf("cmd_0000000000000\n");
+   //char ch[128];
+   //int iID=cmd;
+   //sprintf(ch,"%d",iID);
+   //printf(ch);
+   //printf("\n cmd_1111111111111111\n");
    switch (cmd)
    {
       case CMD_EVENT_SAVE_FILES:
@@ -1914,6 +1914,9 @@ bool command_event(enum event_command cmd, void *data)
          break;
       case CMD_EVENT_UNLOAD_CORE:
          {
+            if (!retroarch_main_quit())
+           	return false;
+           command_event(CMD_EVENT_QUIT, NULL);
             printf("\n exit_03333333\n");//banty
             bIsShowScene=false;
             printf("exit\n");
@@ -2018,13 +2021,16 @@ bool command_event(enum event_command cmd, void *data)
          }
          break;
       case CMD_EVENT_CLOSE_CONTENT:
+      	command_event(CMD_EVENT_QUIT, NULL);
+      	printf("\n exit_CLOSE000000000000000\n");//banty
+      	break;
       case CMD_EVENT_QUIT:
          if (!retroarch_main_quit())
-           //return false;
+           return false;
            
-         command_event(CMD_EVENT_QUIT, NULL);
+         
          printf("\n exit_09212222222222\n");//banty
-         bIsShowScene=false;
+         //bIsShowScene=false;
          printf("exit\n");
          break;
       case CMD_EVENT_CHEEVOS_HARDCORE_MODE_TOGGLE:
@@ -3912,8 +3918,9 @@ int rarch_main(int argc, char *argv[], void *data)
          break;
       }
    }
-
+   printf("exit_0000000000000000000\n");
    main_exit(data);
+   printf("exit_11111111111111111111111111");
 #endif
 
    return 0;
