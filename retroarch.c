@@ -696,7 +696,7 @@ const char *char_list_new_special(enum string_list_type type, void *data)
 
    return options;
 }
-
+extern char* FindInConfig(char* key);
 void retroarch_path_set_redirect(settings_t *settings)
 {
    char content_dir_name[PATH_MAX_LENGTH];
@@ -866,6 +866,30 @@ void retroarch_path_set_redirect(settings_t *settings)
       else
          savestate_is_dir   = path_is_directory(runloop_st->name.savestate);
 
+
+//banty
+	printf("erewqrwrfw677777777777\n");
+	
+	//ReadConfig("");
+	char* cPath=FindInConfig("state_path");//
+	
+	printf(cPath);
+	printf("\n");
+	
+	printf("null-----------------\n");
+	if(strlen(cPath)!=0)
+	{
+		strlcpy(runloop_st->name.savefile, cPath,
+               sizeof(runloop_st->name.savefile));
+       
+       strlcpy(runloop_st->name.savestate, cPath,
+               sizeof(runloop_st->name.savestate));
+          
+       strlcpy(runloop_st->name.cheatfile, cPath,
+              sizeof(runloop_st->name.cheatfile));  
+	}
+	  
+                       
       if (savefile_is_dir)
       {
          fill_pathname_dir(runloop_st->name.savefile,
@@ -878,7 +902,8 @@ void retroarch_path_set_redirect(settings_t *settings)
                msg_hash_to_str(MSG_REDIRECTING_SAVEFILE_TO),
                runloop_st->name.savefile);
       }
-
+	printf(runloop_st->name.savefile);
+	printf("\n");
       if (savestate_is_dir)
       {
          fill_pathname_dir(runloop_st->name.savestate,
@@ -891,7 +916,8 @@ void retroarch_path_set_redirect(settings_t *settings)
                msg_hash_to_str(MSG_REDIRECTING_SAVESTATE_TO),
                runloop_st->name.savestate);
       }
-
+	printf(runloop_st->name.savestate);
+	printf("\n");
 #ifdef HAVE_CHEATS
       if (path_is_directory(runloop_st->name.cheatfile))
       {
@@ -905,6 +931,8 @@ void retroarch_path_set_redirect(settings_t *settings)
                msg_hash_to_str(MSG_REDIRECTING_CHEATFILE_TO),
                runloop_st->name.cheatfile);
       }
+      printf(runloop_st->name.cheatfile);
+	printf("\n");
 #endif
    }
 
@@ -1991,8 +2019,10 @@ bool command_event(enum event_command cmd, void *data)
          break;
       case CMD_EVENT_CLOSE_CONTENT:
       case CMD_EVENT_QUIT:
-         //if (!retroarch_main_quit())
+         if (!retroarch_main_quit())
            //return false;
+           
+         command_event(CMD_EVENT_QUIT, NULL);
          printf("\n exit_09212222222222\n");//banty
          bIsShowScene=false;
          printf("exit\n");

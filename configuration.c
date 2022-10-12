@@ -6039,6 +6039,7 @@ void DoKeyAndVal(char*  cBuffer)
 }
 bool ReadConfig(const char*  filename)
 {
+	iMax_key=0;
    //printf("start");
 	m_filenam = filename;
 
@@ -6090,14 +6091,21 @@ char* FindInConfig(char*  cFindkey) // 注意：之前用的一直都是string�
 
 	if (iMax_key==0)
 	{
+	//printf(cFindkey);
+	//printf("000\n");
 		return "";
 	}
+	
+	//printf(cFindkey);
+	
 	for (int i = 0; i < iMax_key;i++)
 	{
 		if (strcmp(key[i],cFindkey)==0)
 		{
+		//printf(cFindkey);
 			return value[i];
 		}
 	}
+	//printf("end------\n");
 	return "";
 }
