@@ -1017,7 +1017,7 @@ static config_file_t *video_shader_get_root_preset_config(const char *path)
       }
       else
       {
-         //printf(conf_path);
+         printf(conf_path);
       }
       
    }

@@ -1914,13 +1914,13 @@ bool command_event(enum event_command cmd, void *data)
          break;
       case CMD_EVENT_UNLOAD_CORE:
          {
-            if (!retroarch_main_quit())
-           	return false;
-           command_event(CMD_EVENT_QUIT, NULL);
+            //if (!retroarch_main_quit())
+           	//return false;
+           //command_event(CMD_EVENT_QUIT, NULL);
             printf("\n exit_03333333\n");//banty
-            bIsShowScene=false;
-            printf("exit\n");
-            return true;
+            //bIsShowScene=false;
+            //printf("exit\n");
+            //return true;
             bool load_dummy_core            = data ? *(bool*)data : true;
             bool contentless                = false;
             bool is_inited                  = false;
@@ -1989,6 +1989,7 @@ bool command_event(enum event_command cmd, void *data)
                if (  (settings->uints.quit_on_close_content == QUIT_ON_CLOSE_CONTENT_CLI && global->launched_from_cli)
                      || settings->uints.quit_on_close_content == QUIT_ON_CLOSE_CONTENT_ENABLED
                   )
+                  printf("exitAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
                   command_event(CMD_EVENT_QUIT, NULL);
 #endif
                if (!task_push_start_dummy_core(&content_info))
@@ -2029,8 +2030,8 @@ bool command_event(enum event_command cmd, void *data)
            return false;
            
          
-         printf("\n exit_09212222222222\n");//banty
-         //bIsShowScene=false;
+         printf("\n exit_09212222999999\n");//banty
+         bIsShowScene=false;
          printf("exit\n");
          break;
       case CMD_EVENT_CHEEVOS_HARDCORE_MODE_TOGGLE:
