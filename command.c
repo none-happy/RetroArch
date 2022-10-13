@@ -1615,8 +1615,12 @@ bool command_event_main_state(unsigned cmd)
 
       core_serialize_size(&info);
       savestates_enabled = (info.size > 0);
+      printf("savestates_enabled==true\n");
    }
-
+   else
+   {
+   	printf("savestates_enabled==false\n");
+   }
    if (savestates_enabled)
    {
       switch (cmd)
@@ -1634,9 +1638,17 @@ bool command_event_main_state(unsigned cmd)
                      settings->bools.frame_time_counter_reset_after_save_state;
 
                if (cmd == CMD_EVENT_SAVE_STATE)
+               {
+               		printf("state_path==1\n");
+               		printf(state_path);
+               		printf("\n");
                   content_save_state(state_path, true, false);
+                }
                else
+               {
+               printf("state_path==2\n");
                   content_save_state_to_ram();
+                 }
 
                /* Clean up excess savestates if necessary */
                if (savestate_auto_index && (savestate_max_keep > 0))

@@ -1462,13 +1462,17 @@ bool content_save_state(const char *path, bool save_to_disk, bool autosave)
    {
       RARCH_LOG("[State]: %s\n",
             msg_hash_to_str(MSG_CORE_DOES_NOT_SUPPORT_SAVESTATES));
+            printf("state_saveerror_11\n");
       return false;
    }
 
    core_serialize_size(&info);
 
    if (info.size == 0)
+   {
+   printf("state_saveerror_22\n");
       return false;
+      }
    serial_size = info.size;
 
    if (!save_state_in_background)
@@ -1478,6 +1482,8 @@ bool content_save_state(const char *path, bool save_to_disk, bool autosave)
          RARCH_ERR("[State]: %s \"%s\".\n",
                msg_hash_to_str(MSG_FAILED_TO_SAVE_STATE_TO),
                path);
+               
+               printf("state_saveerror_33\n");
          return false;
       }
 
@@ -1499,6 +1505,7 @@ bool content_save_state(const char *path, bool save_to_disk, bool autosave)
                msg_hash_to_str(MSG_FILE_ALREADY_EXISTS_SAVING_TO_BACKUP_BUFFER));
 
          task_push_load_and_save_state(path, data, serial_size, true, autosave);
+          printf("state_saveerror_44\n");
       }
       else
          task_push_save_state(path, data, serial_size, autosave);
@@ -1512,6 +1519,7 @@ bool content_save_state(const char *path, bool save_to_disk, bool autosave)
             RARCH_ERR("[State]: %s \"%s\".\n",
                   msg_hash_to_str(MSG_FAILED_TO_SAVE_STATE_TO),
                   path);
+                   printf("state_saveerror_55\n");
             return false;
          }
       }
@@ -1529,6 +1537,7 @@ bool content_save_state(const char *path, bool save_to_disk, bool autosave)
       if (!(undo_load_buf.data = malloc(serial_size)))
       {
          free(data);
+          printf("state_saveerror_66\n");
          return false;
       }
 
