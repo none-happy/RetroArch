@@ -871,7 +871,7 @@ void retroarch_path_set_redirect(settings_t *settings)
 	printf("erewqrwrfw677777777777\n");
 	
 	//ReadConfig("");
-	char* cPath=FindInConfig("state_path");//
+	/*char* cPath=FindInConfig("state_path");//
 	
 	printf(cPath);
 	printf("\n");
@@ -887,8 +887,16 @@ void retroarch_path_set_redirect(settings_t *settings)
           
        strlcpy(runloop_st->name.cheatfile, cPath,
               sizeof(runloop_st->name.cheatfile));  
-	}
-	  
+	}*/
+	
+	  strlcpy(runloop_st->name.savefile, "/roms/state",
+               sizeof(runloop_st->name.savefile));
+       
+       strlcpy(runloop_st->name.savestate, "/roms/state",
+               sizeof(runloop_st->name.savestate));
+          
+       strlcpy(runloop_st->name.cheatfile, "/roms/state",
+              sizeof(runloop_st->name.cheatfile)); 
                        
       if (savefile_is_dir)
       {
