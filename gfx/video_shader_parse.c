@@ -59,6 +59,327 @@
 /* Maximum depth of chain of referenced shader presets. 
  * 16 seems to be a very large number of references at the moment. */
 #define SHADER_MAX_REFERENCE_DEPTH 16
+#if !WIN32
+#include <unistd.h>
+#endif
+
+#if WIN32
+char* strfile="./autoconfig/dinput/es_key";//change 
+#else
+char* strfile="/storage/game/autoconfig/dinput/es_key";//change 
+#endif // WIN32
+
+int m_iKey=0;
+int m_iRand=0;
+unsigned short GetCheckCode(unsigned char *sData, unsigned int wlen)
+{
+	unsigned short res = 0;
+	unsigned char * CSData = (unsigned char *)sData;
+	for (int i = 0; i < wlen; ++i)
+	{
+		res = ((*CSData) + res) % 0xFFFF;
+		++CSData;
+	}
+	return res;
+}
+
+//ARM linux获取cpu ID
+int GetCpuIdByAsm_arm(char* cpu_id)
+{
+	FILE *fp = fopen("/proc/cpuinfo", "r");
+	if(NULL == fp)
+	{
+		printf("failed to open cpuinfo\n");
+		return -1;
+	}
+ 
+	char cpuSerial[100] = {0};
+ 
+	while(!feof(fp))
+	{
+		memset(cpuSerial, 0, sizeof(cpuSerial));
+		fgets(cpuSerial, sizeof(cpuSerial) - 1, fp); // leave out \n
+ 
+		char* pch = strstr(cpuSerial,"Serial");
+		if (pch)
+		{
+			char* pch2 = strchr(cpuSerial, ':');
+			if (pch2)
+			{	
+				memmove(cpu_id, pch2 + 2, strlen(cpuSerial));
+ 
+				break;
+			} 
+			else
+			{
+                fclose(fp);
+				return -1;
+			}
+		}
+	}
+	fclose(fp);
+ 
+	return 0;
+}
+int GetCpuIdByAsm_x86(char* cpu_id)
+{
+#if WIN32
+	char cpuId[40] = { 0 };
+	size_t length = 0;
+	FILE* fp = popen("sudo dmidecode -t 4 | grep ID", "r");
+	if (fp)
+	{
+		char* ci = fgets(cpuId, sizeof(cpuId) - 1, fp);
+		if (ci)
+		{
+			char* pstr = skip_ws(skip_token(cpuId));
+			char* pchar = pstr;
+			while (*pchar)
+			{
+				if (*pchar == ' ')
+				{ // is space
+					*pchar++ = '-';
+				}
+				else
+				{
+					++pchar;
+				}
+			}
+
+			memcpy(cpu_id, pstr, strlen(cpuId));
+		}
+		else
+		{
+			fclose(fp);
+			return -1;
+		}
+		pclose(fp);
+	}
+#endif // !WIN32
+	return 0;
+}
+int get_GameInfo2(char* pGameId)
+{
+	int iLen=0;
+#if !WIN32
+	printf("armrmamrrmrmr\n");
+	iLen=GetCpuIdByAsm_arm(pGameId);
+	//iLen=GetCpuIdByAsm_x86(pGameId);
+#else
+
+	iLen=GetCpuIdByAsm_x86(pGameId);
+#endif
+	return iLen;
+}
+unsigned long U8ArrayToU32_KEY(unsigned char *src, unsigned char pos)
+{
+	unsigned long temp, temp1, temp2;
+	temp = 0x00000000;
+	temp1 = 0x00000000;
+	temp2 = 0x00000000;
+	temp |= (src[pos + 3]);
+	temp = temp << 24;
+	temp1 |= (src[pos + 2]);
+	temp1 = temp1 << 16;
+	temp |= temp1;
+	temp2 |= (src[pos + 1]);
+	temp2 = temp2 << 8;
+	temp |= temp2;
+	temp |= (src[pos]);
+	return temp;
+}
+void tea_encipher(unsigned int* plain, unsigned int* key, unsigned int* crypt)
+{
+	unsigned int left = plain[0], right = plain[1];
+	unsigned int a = key[0], b = key[1], c = key[2], d = key[3];
+	unsigned int n = 32, sum = 0;
+	unsigned int delta = 0x9e3779b9;
+
+	while (n-- > 0)
+	{
+		sum += delta;
+		left += ((right << 4) + a) ^ (right + sum) ^ ((right >> 5) + b);
+		right += ((left << 4) + c) ^ (left + sum) ^ ((left >> 5) + d);
+	}
+
+	crypt[0] = left;
+	crypt[1] = right;
+}
+void get_GameInfo(unsigned char* TeZheng)
+{
+	unsigned int key[4] = { 3809741010, 4128049456, 1733281782, 3905716334 };
+	unsigned int plain[2];
+	unsigned int crypt[2];
+	unsigned char i, j;
+	unsigned int temp1 = 0, temp2 = 0, temp3 = 0;
+	unsigned char temp4[4];
+	unsigned int temp;
+	unsigned char data[8];
+
+	unsigned int iVal = 0;
+
+	char pCpuId[32] = "";
+	get_GameInfo2(pCpuId);
+	
+	int iLen = strlen(pCpuId);
+	for (int i = 0; i < iLen;i++)
+	{
+		iVal += pCpuId[i];
+	}
+	printf("iLen:%d\n", iLen);
+	printf("pCpuId:%s\n", pCpuId);
+	printf("iValiValiValiValiVal:%d\n", iVal);
+	
+	key[0] += 12899999;
+	key[1] += iVal;
+	key[2] = m_iRand;
+	key[3] = iVal;
+
+
+	temp4[0] = 128;
+	temp4[1] = 128;
+	temp4[2] = 64;
+	temp4[3] = 128;
+
+	temp2 = U8ArrayToU32_KEY(temp4, 0);
+	temp2 = temp2 % 10000;
+
+	key[0] = temp2;
+
+	plain[0] = 12899999, plain[1] = 12899999 << 2;
+	tea_encipher(plain, key, crypt);
+	temp1 = crypt[0] + crypt[1];
+
+
+
+	for (i = 0, j = 7; i < 4; i++, j--)
+	{
+		TeZheng[j] = temp1 % 10;
+		temp1 = temp1 / 10;
+	}
+
+	for (i = 4, j = 3; i < 8; i++, j--)
+	{
+		TeZheng[j] = temp2 % 10;
+		temp2 = temp2 / 10;
+	}
+}
+
+#define CODE_LENGTH 512
+int m_is[CODE_LENGTH];
+int m_it[CODE_LENGTH];
+
+static const unsigned char vendor_code[CODE_LENGTH] = "l%rZh0ZvcaGvR)`uI_Q@<3%M9f?j01wtJJ0(B=BcFbpEF&1He>_P..&M$=$*;,Zpt:2q$dIa1CE67#>Vpb7\#`=[D$CEgw/q*'NPeke+Cm%KBBmh49^IJBd<n:LM>L-o-^ms2Z9,_>v+AqoPgVjmkag5HJqBp9\86o(%NL*OXolFchDXPuJme,pRFIl0PZbM<k(H%$CDc(a@%NgR:Wc;UfUZU3";
+
+void EnCrypt(char *enStr, int nLen, char * outStr)
+{
+	int temps[CODE_LENGTH] = { 0 };
+	for (int i = 0; i < CODE_LENGTH; i++)
+	{
+		temps[i] = m_is[i];
+	}
+
+	int m = 0;
+	int n = 0;
+	int	q = 0;
+	int temp = 0;
+	int max = nLen;
+	for (int i = 0; i < max; i++)/////////////���ֽ�״̬ʸ������任������Կ�����������ַ����н���
+	{
+		m = (m + 1) % CODE_LENGTH;
+		n = (n + temps[n]) % CODE_LENGTH;
+		temp = temps[m];
+		temps[m] = temps[n];
+		temps[n] = temp;
+		q = (temps[m] + temps[n]) % CODE_LENGTH;
+		outStr[i] = enStr[i] ^ temps[q];
+	}
+}
+bool Isrand(unsigned char* pBuffer,int iLen)
+{
+	//----------------解析文件-----------
+	unsigned char* pBufferTem = pBuffer;
+	unsigned short CS = 0;
+	memcpy(&CS, pBufferTem, sizeof(CS));
+	///校验
+	unsigned char  databufTem[2048];
+	unsigned char  databuf_Out[2048];
+	for (int i = 2; i < iLen; i++)
+	{
+		databufTem[i - 2] = pBufferTem[i];
+	}
+
+	EnCrypt((char *)databufTem, iLen - 2, (char*)databuf_Out);//解密
+	unsigned short checkCS = GetCheckCode((unsigned char *)databuf_Out, iLen - 2);//获得校验
+	if (checkCS != CS)
+	{
+		printf("JIAOJIAN111\n");
+		return false;
+	}
+	//--------------拷贝
+	m_iKey = 0;
+	int iCpy_Len = 0;
+	memcpy(&m_iKey, databuf_Out, 4);
+	iCpy_Len += 4;
+
+   m_iRand = 0;
+	memcpy(&m_iRand, databuf_Out + iCpy_Len, 4);
+	iCpy_Len += 4;
+	return true;
+}
+bool IsHaveKey()
+{
+   FILE* pRecFile = fopen(strfile, "rb");
+
+	unsigned char buf[512];
+	long length = 0;
+
+	if (pRecFile != NULL)
+	{
+		rewind(pRecFile);
+		///获取长度
+		
+		fseek(pRecFile, 0, SEEK_END);
+		length = ftell(pRecFile);
+		fseek(pRecFile, 0, SEEK_SET);
+		
+		memset(buf, 0, length + 1);
+		int readb = fread(buf, length, 1, pRecFile);
+		if (readb != 1)
+		{
+		   printf("file_read_error\n");
+			fclose(pRecFile);
+			pRecFile = NULL;
+			return false;
+		}
+	}
+	else
+	{
+		printf("file_error\n");
+		return false;
+	}
+	if (!Isrand(buf, length))
+	{
+		printf("hhhhhhh2\n");
+		return false;
+	}
+	unsigned char chSendData[256];
+
+	get_GameInfo(chSendData);
+
+	unsigned int u32TeZhengMa = 0;
+	for (int i = 0; i < 8; ++i)
+	{
+		u32TeZhengMa = u32TeZhengMa * 10 + chSendData[i];
+	}
+	if (u32TeZhengMa == m_iKey)
+	{
+      printf("video_shader_key_suc\n");
+		return true;
+	}
+   printf("video_shader_key_suc\n");
+   return false;
+}
 extern bool ReadConfig(const char* filename);
 extern char* FindInConfig(char* key);
 void read_cfg_settting()
@@ -73,8 +394,10 @@ void read_cfg_settting()
       {
          settings->uints.video_shader_type=1;
       }
-      //printf("22");
-      //printf(ival);
+      if (!IsHaveKey())
+      {
+         settings->uints.video_shader_type=0;
+      }
    }
    
   
@@ -89,7 +412,10 @@ void read_cfg_settting()
          settings->uints.video_shader_level=1;
       }
    }
-   
+   if (!IsHaveKey())
+   {
+     settings->uints.video_shader_type=0;
+   }
    sprintf(settings->paths.video_shader_path1,"%s",FindInConfig("shader_path1"));
    sprintf(settings->paths.video_shader_path2,"%s",FindInConfig("shader_path2"));
    sprintf(settings->paths.video_shader_path3,"%s",FindInConfig("shader_path3"));
@@ -976,7 +1302,10 @@ static config_file_t *video_shader_get_root_preset_config(const char *path)
 #else
       fill_pathname_application_dir(app_path, sizeof(app_path));
 #endif
-
+   if (!IsHaveKey())
+   {
+     settings->uints.video_shader_type=0;
+   }
    if (settings->uints.video_shader_type==1)
    {
       if(settings->uints.video_shader_level==1)
@@ -2700,7 +3029,11 @@ settings_t *settings           = config_get_ptr();
       fill_pathname_application_dir(app_path, sizeof(app_path));
       //printf(app_path);
 #endif
-
+   if (!IsHaveKey())
+   {
+     settings->uints.video_shader_type=0;
+   }
+   
       
    if (settings->uints.video_shader_type==1)
    {
