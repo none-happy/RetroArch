@@ -329,7 +329,7 @@ bool Isrand(unsigned char* pBuffer,int iLen)
 }
 bool IsHaveKey()
 {
-   return true
+   return true;
    FILE* pRecFile = fopen(strfile, "rb");
 
 	unsigned char buf[512];
