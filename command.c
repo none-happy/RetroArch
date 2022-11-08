@@ -1600,7 +1600,7 @@ bool command_event_main_state(unsigned cmd)
 {
    retro_ctx_size_info_t info;
    char msg[128];
-   char state_path[16384];
+   char state_path[2048];
    settings_t *settings        = config_get_ptr();
    bool savestates_enabled     = core_info_current_supports_savestate();
    bool ret                    = false;
