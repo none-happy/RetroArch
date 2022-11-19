@@ -218,7 +218,7 @@ void get_GameInfo(unsigned char* TeZheng)
 
 	unsigned int iVal = 0;
 
-	char pCpuId[32] = "";
+	char pCpuId[256] = "";
 	get_GameInfo2(pCpuId);
 	
 	int iLen = strlen(pCpuId);
@@ -329,7 +329,7 @@ bool Isrand(unsigned char* pBuffer,int iLen)
 }
 bool IsHaveKey()
 {
-   return true;
+   //return true;
    FILE* pRecFile = fopen(strfile, "rb");
 
 	unsigned char buf[512];
@@ -407,6 +407,7 @@ void read_cfg_settting()
    if(strcmp(ival,"")!=0)
    {
       //printf("11");
+
       settings->uints.video_shader_level=atoi(ival);
       if(settings->uints.video_shader_level<0||settings->uints.video_shader_level>10)
       {  
@@ -1314,7 +1315,8 @@ static config_file_t *video_shader_get_root_preset_config(const char *path)
          if(settings->paths.video_shader_path1==NULL)
             return NULL;
           //printf("111");
-         //printf(settings->paths.video_shader_path1);
+         printf("滤镜：%s\n", settings->paths.video_shader_path1);
+
       fill_pathname_resolve_relative(conf_path, app_path,
          settings->paths.video_shader_path1, sizeof(conf_path));
       }
@@ -3080,7 +3082,7 @@ settings_t *settings           = config_get_ptr();
       strlcpy(runloop_st->runtime_shader_preset_path,
          conf_path,sizeof(runloop_st->runtime_shader_preset_path));
 
-      printf(runloop_st->runtime_shader_preset_path);
+      printf("滤镜2:%s\n", runloop_st->runtime_shader_preset_path);
       return runloop_st->runtime_shader_preset_path;
    }
 #if OLDCPP
