@@ -992,13 +992,18 @@ struct config_entry_list *config_get_entry(
 #endif
 
       fill_pathname_resolve_relative(conf_path, app_path,
-         "autokey.cfg", sizeof(conf_path));
+         "./autokey.cfg", sizeof(conf_path));
 
-      //printf(conf_path);
+      printf("conf_pathconf_path:%s\n", conf_path);
 
       //printf("11111");
 
-      ReadConfig(conf_path);
+      bool isRead = ReadConfig(conf_path);
+      if(isRead) {
+         printf("读取文件成功\n");
+      } else {
+         printf("读取文件失败\n");
+      }
    }
    if(entry!=NULL)
    {

@@ -423,7 +423,7 @@ void read_cfg_settting()
    sprintf(settings->paths.video_shader_path3,"%s",FindInConfig("shader_path3"));
    sprintf(settings->paths.video_shader_path4,"%s",FindInConfig("shader_path4"));
 
-   //printf(settings->paths.video_shader_path1);
+   printf(settings->paths.video_shader_path1);
 }
 /* TODO/FIXME - global state - perhaps move outside this file */
 static path_change_data_t *file_change_data = NULL;
