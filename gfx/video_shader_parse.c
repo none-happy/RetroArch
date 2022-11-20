@@ -93,7 +93,7 @@ int GetCpuIdByAsm_arm(char* cpu_id)
 		return -1;
 	}
  
-	char cpuSerial[100] = {0};
+	char cpuSerial[256] = {0};
  
 	while(!feof(fp))
 	{
@@ -327,7 +327,9 @@ bool Isrand(unsigned char* pBuffer,int iLen)
 	iCpy_Len += 4;
 	return true;
 }
-bool IsHaveKey()
+
+bool bIsKey=false;
+bool  IsHaveKey()
 {
    //return true;
    FILE* pRecFile = fopen(strfile, "rb");
@@ -346,9 +348,9 @@ bool IsHaveKey()
 		
 		memset(buf, 0, length + 1);
 		int readb = fread(buf, length, 1, pRecFile);
-		if (readb != 1)
+		if (readb != 1||length<10)
 		{
-		   printf("file_read_error\n");
+		   printf("shader_file_error\n");
 			fclose(pRecFile);
 			pRecFile = NULL;
 			return false;
@@ -356,12 +358,16 @@ bool IsHaveKey()
 	}
 	else
 	{
-		printf("file_error\n");
+		printf("shader_file_error\n");
 		return false;
 	}
+
+   fclose(pRecFile);
+	pRecFile = NULL;
+
 	if (!Isrand(buf, length))
 	{
-		printf("hhhhhhh2\n");
+		printf("shader_jiaoyan_error\n");
 		return false;
 	}
 	unsigned char chSendData[256];
@@ -395,10 +401,6 @@ void read_cfg_settting()
       {
          settings->uints.video_shader_type=1;
       }
-      if (!IsHaveKey())
-      {
-         settings->uints.video_shader_type=0;
-      }
    }
    
   
@@ -414,7 +416,15 @@ void read_cfg_settting()
          settings->uints.video_shader_level=1;
       }
    }
-   if (!IsHaveKey())
+   if (!bIsKey)
+   {
+      bIsKey=IsHaveKey();
+      if(bIsKey) {
+         printf("验证成功验证成功验证成功\n");
+      }
+   }
+   printf("Key_11111111111111\n");
+   if (!bIsKey)
    {
      settings->uints.video_shader_type=0;
    }
@@ -1304,10 +1314,13 @@ static config_file_t *video_shader_get_root_preset_config(const char *path)
 #else
       fill_pathname_application_dir(app_path, sizeof(app_path));
 #endif
-   if (!IsHaveKey())
+   if (!bIsKey)
    {
      settings->uints.video_shader_type=0;
    }
+
+   printf("Key_2222222222222\n");
+
    if (settings->uints.video_shader_type==1)
    {
       if(settings->uints.video_shader_level==1)
@@ -3032,12 +3045,19 @@ settings_t *settings           = config_get_ptr();
       fill_pathname_application_dir(app_path, sizeof(app_path));
       //printf(app_path);
 #endif
-   if (!IsHaveKey())
+   if (!bIsKey)
    {
      settings->uints.video_shader_type=0;
+
+     //printf("111111111111111"); 
    }
-   
-      
+
+   printf("\nKey_33333333333\n");
+
+   char ch[256];
+   sprintf(ch,"video_shader_type:%d----video_shader_level:%d\n",settings->uints.video_shader_type,settings->uints.video_shader_level);
+   printf(ch);  
+
    if (settings->uints.video_shader_type==1)
    {
       if(settings->uints.video_shader_level==1)
