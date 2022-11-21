@@ -433,7 +433,19 @@ void read_cfg_settting()
    sprintf(settings->paths.video_shader_path3,"%s",FindInConfig("shader_path3"));
    sprintf(settings->paths.video_shader_path4,"%s",FindInConfig("shader_path4"));
 
+   //settings->paths.video_shader_path3="";
+   //settings->paths.video_shader_path3="";
+   sprintf(settings->paths.video_shader_path3,"%s","./shaders/shaders_glsl/crt/scanline.glslp");
+   sprintf(settings->paths.video_shader_path4,"%s","./shaders/shaders_glsl/crt/fakelottes.glslp");
+
    printf(settings->paths.video_shader_path1);
+   printf("\nKey_11111111111111\n");
+   printf(settings->paths.video_shader_path2);
+   printf("\nKey_11111111111111\n");
+   printf(settings->paths.video_shader_path3);
+   printf("\nKey_11111111111111\n");
+   printf(settings->paths.video_shader_path4);
+   printf("\nKey_11111111111111\n");
 }
 /* TODO/FIXME - global state - perhaps move outside this file */
 static path_change_data_t *file_change_data = NULL;
@@ -1362,7 +1374,9 @@ static config_file_t *video_shader_get_root_preset_config(const char *path)
       }
       else
       {
+         printf("\nshader:");
          printf(conf_path);
+         printf("\n");
       }
       
    }
@@ -3103,6 +3117,7 @@ settings_t *settings           = config_get_ptr();
          conf_path,sizeof(runloop_st->runtime_shader_preset_path));
 
       printf("滤镜2:%s\n", runloop_st->runtime_shader_preset_path);
+      printf("\n");
       return runloop_st->runtime_shader_preset_path;
    }
 #if OLDCPP
