@@ -2017,7 +2017,7 @@ static bool gl_shader_driver_init(video_shader_ctx_init_t *init)
 {
    void            *tmp = NULL;
    settings_t *settings = config_get_ptr();
-
+   printf("gl_shader_driver_init_001\n");
    if (!init->shader || !init->shader->init)
    {
       init->shader = gl_shader_driver_set_backend(init->shader_type);
@@ -2026,18 +2026,21 @@ static bool gl_shader_driver_init(video_shader_ctx_init_t *init)
          return false;
    }
 
+   printf(init->path);
+   printf("\n");
+   
    tmp = init->shader->init(init->data, init->path);
 
    if (!tmp)
       return false;
-
+   printf("gl_shader_driver_init_002\n");
    if (string_is_equal(settings->arrays.menu_driver, "xmb")
          && init->shader->init_menu_shaders)
    {
       RARCH_LOG("Setting up menu pipeline shaders for XMB ...\n");
       init->shader->init_menu_shaders(tmp);
    }
-
+   printf("gl_shader_driver_init_003\n");
    init->shader_data = tmp;
 
    return true;
@@ -2082,11 +2085,13 @@ static bool gl2_shader_init(gl2_t *gl, const gfx_ctx_driver_t *ctx_driver,
    init_data.shader_data             = NULL;
    init_data.data                    = gl;
    init_data.path                    = shader_path;
-
+   printf("gl_shader_driver_init_00\n");
    if (gl_shader_driver_init(&init_data))
    {
       gl->shader                     = init_data.shader;
       gl->shader_data                = init_data.shader_data;
+
+      printf("gl_shader_driver_init_suc\n");
       return true;
    }
 
@@ -3878,13 +3883,17 @@ static void *gl2_init(const video_info_t *video,
    }
 
    RARCH_LOG("[GL]: Default shader backend found: %s.\n", gl->shader->ident);
-
+   printf("shader_init_start\n");
    if (!gl2_shader_init(gl, ctx_driver, hwr))
    {
       RARCH_ERR("[GL]: Shader initialization failed.\n");
+      printf("shader_init_error\n");
       goto error;
    }
-
+   else
+   {
+      printf("shader_init_suc\n");
+   }
    {
       unsigned texture_info_id = gl->shader->get_prev_textures(gl->shader_data);
       unsigned minimum         = texture_info_id;
@@ -3894,9 +3903,14 @@ static void *gl2_init(const video_info_t *video,
    if (!gl2_shader_info(gl, &shader_info))
    {
       RARCH_ERR("[GL]: Shader driver info check failed.\n");
+
+      printf("shader_info_error\n");
       goto error;
    }
-
+   else
+   {
+      printf("shader_info_suc\n");
+   }
    RARCH_LOG("[GL]: Using %u textures.\n", gl->textures);
    RARCH_LOG("[GL]: Loaded %u program(s).\n",
          shader_info.num);
