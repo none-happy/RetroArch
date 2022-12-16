@@ -4047,6 +4047,7 @@ int16_t input_state_device(
 void input_driver_poll(void)
 {
    size_t i, j;
+   size_t iKeyCom[4][2];
    rarch_joypad_info_t joypad_info[MAX_USERS];
    input_driver_state_t *input_st = &input_driver_st;
    settings_t *settings           = config_get_ptr();
@@ -4064,6 +4065,13 @@ void input_driver_poll(void)
 #endif
    bool input_remap_binds_enable  = settings->bools.input_remap_binds_enable;
    uint8_t max_users              = (uint8_t)settings->uints.input_max_users;
+
+
+   for(i=0;i<4;i++)
+   {
+      iKeyCom[i][0]=0;
+      iKeyCom[i][1]=0;
+   }
 
    if (     joypad && joypad->poll)
       joypad->poll();
@@ -4221,6 +4229,19 @@ void input_driver_poll(void)
                                     );
                            if (val)
                            {
+
+                              if(i<4)
+				                  {
+					                  if(k==2)
+					                  {
+						                  iKeyCom[i][0]=1;
+					                  }
+					                  else if(k==3)
+					                  {
+						                  iKeyCom[i][1]=1;
+					                  }
+				                  }
+
                               p_new_state->analog_buttons[k] = val;
                               //p_new_state->analog_buttons[k] = 0;
                               //char ch[12];
@@ -4230,6 +4251,20 @@ void input_driver_poll(void)
                               {
                                  retroarch_menu_running();
                                  p_new_state->analog_buttons[k] = 0;
+                              }
+                           }
+                           else
+                           {
+                              if(i<4)
+                              {  
+                                 if(k==2)
+					                  {
+						                  iKeyCom[i][0]=0;
+					                  }
+					                  else if(k==3)
+					                  {
+						                  iKeyCom[i][1]=0;
+					                  }
                               }
                            }
                               
@@ -4447,6 +4482,18 @@ void input_driver_poll(void)
             default:
                break;
          }
+      }
+
+      for( i=0;i<4;i++)
+      {
+      	if(iKeyCom[i][0]==1&&iKeyCom[i][1]==1)
+      	{
+      		iKeyCom[i][0]=0;
+      		iKeyCom[i][1]=0;
+            printf("int Setttinging\n");
+      		retroarch_menu_running();
+      		break;
+      	}
       }
    }
 

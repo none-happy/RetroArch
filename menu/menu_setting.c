@@ -20563,7 +20563,7 @@ static bool setting_append_list(
                   general_write_handler,
                   general_read_handler,
                   SD_FLAG_NONE);
-            (*list)[list_info->index - 1].change_handler = bluetooth_enable_toggle_change_handler;
+          //  (*list)[list_info->index - 1].change_handler = bluetooth_enable_toggle_change_handler;
 
 #ifdef HAVE_WIFI
             CONFIG_BOOL(

@@ -2565,7 +2565,7 @@ void menu_cbs_init(
 
    /* It will try to find a corresponding callback function inside
     * menu_cbs_cancel.c, then map this callback to the entry. */
-   menu_cbs_init_bind_cancel(cbs, path, label, type, idx);
+   //menu_cbs_init_bind_cancel(cbs, path, label, type, idx);
 
    /* It will try to find a corresponding callback function inside
     * menu_cbs_scan.c, then map this callback to the entry. */
@@ -7969,7 +7969,7 @@ int generic_menu_entry_action(
                   entry->label, entry->type, i, entry->entry_idx);
          break;
       case MENU_ACTION_SEARCH:
-         menu_input_dialog_start_search();
+         //menu_input_dialog_start_search();
          break;
       case MENU_ACTION_SCAN:
          if (cbs && cbs->action_scan)
