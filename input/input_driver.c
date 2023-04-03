@@ -4230,7 +4230,7 @@ void input_driver_poll(void)
                            if (val)
                            {
 
-                              if(i<4)
+                              if(i==0)
 				                  {
 					                  if(k==2)
 					                  {
@@ -4240,22 +4240,30 @@ void input_driver_poll(void)
 					                  {
 						                  iKeyCom[i][1]=1;
 					                  }
+
+                                 if(iKeyCom[i][0]==1&&iKeyCom[i][1]==1)
+                                 {
+                                    p_new_state->analog_buttons[2] = 0;
+                                    p_new_state->analog_buttons[3] = 0;
+                                 }
 				                  }
 
-                              p_new_state->analog_buttons[k] = val;
+                              
+
+                              
                               //p_new_state->analog_buttons[k] = 0;
                               //char ch[12];
                               //sprintf(ch,"KEY:%d",k);
                               //printf(ch);
-                              if(k==2&&i==1)
+                              if(k==2&&i==0)
                               {
-                                 retroarch_menu_running();
-                                 p_new_state->analog_buttons[k] = 0;
+                                 //retroarch_menu_running();//banty
+                                 //p_new_state->analog_buttons[k] = 0;
                               }
                            }
                            else
                            {
-                              if(i<4)
+                              if(i==0)
                               {  
                                  if(k==2)
 					                  {

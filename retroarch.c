@@ -729,6 +729,8 @@ void retroarch_path_set_redirect(settings_t *settings)
       fill_pathname_parent_dir_name(content_dir_name,
             runloop_st->runtime_content_path_basename,
             sizeof(content_dir_name));
+     
+   printf("library_name:%s-----------------------------------------------------------------\n",system->library_name);
 
    if (system && !string_is_empty(system->library_name))
    {
@@ -942,7 +944,9 @@ void retroarch_path_set_redirect(settings_t *settings)
       printf(runloop_st->name.cheatfile);
 	printf("\n");
 #endif
-   } else {
+   } 
+   else 
+   {
       printf("MINGZHGIOBNG\n");
    }
 
