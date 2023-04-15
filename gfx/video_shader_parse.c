@@ -424,10 +424,10 @@ void read_cfg_settting()
       }
    }
    printf("Key_11111111111111\n");
-   if (!bIsKey)
+   /*if (!bIsKey)
    {
      settings->uints.video_shader_type=0;
-   }
+   }*/
    sprintf(settings->paths.video_shader_path1,"%s",FindInConfig("shader_path1"));
    sprintf(settings->paths.video_shader_path2,"%s",FindInConfig("shader_path2"));
    sprintf(settings->paths.video_shader_path3,"%s",FindInConfig("shader_path3"));
@@ -1326,10 +1326,10 @@ static config_file_t *video_shader_get_root_preset_config(const char *path)
 #else
       fill_pathname_application_dir(app_path, sizeof(app_path));
 #endif
-   if (!bIsKey)
+  /* if (!bIsKey)
    {
      settings->uints.video_shader_type=0;
-   }
+   }*/
 
    printf("Key_2222222222222\n");
 
@@ -3059,12 +3059,10 @@ settings_t *settings           = config_get_ptr();
       fill_pathname_application_dir(app_path, sizeof(app_path));
       //printf(app_path);
 #endif
-   if (!bIsKey)
+  /* if (!bIsKey)
    {
      settings->uints.video_shader_type=0;
-
-     //printf("111111111111111"); 
-   }
+   }*/
 
    printf("\nKey_33333333333\n");
 
