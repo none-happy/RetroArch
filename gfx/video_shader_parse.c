@@ -421,6 +421,8 @@ void read_cfg_settting()
       bIsKey=IsHaveKey();
       if(bIsKey) {
          printf("验证成功验证成功验证成功\n");
+      } else {
+         printf("验证成功验证成功验证成功SHIBAISHIBAISHIBAI\n");
       }
    }
    printf("Key_11111111111111\n");
