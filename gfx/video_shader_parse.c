@@ -205,7 +205,7 @@ void tea_encipher(unsigned int* plain, unsigned int* key, unsigned int* crypt)
 	crypt[0] = left;
 	crypt[1] = right;
 }
-void get_GameInfo(unsigned char* TeZheng)
+void get_GameInfo(unsigned char* TeZheng)//banty
 {
 	unsigned int key[4] = { 3809741010, 4128049456, 1733281782, 3905716334 };
 	unsigned int plain[2];
@@ -219,10 +219,15 @@ void get_GameInfo(unsigned char* TeZheng)
 	unsigned int iVal = 0;
 
 	char pCpuId[256] = "";
+
+   for(int i=0;i<256;i++)
+   {
+      pCpuId[i]=0;
+   }
 	get_GameInfo2(pCpuId);
 	
 	int iLen = strlen(pCpuId);
-	for (int i = 0; i < iLen;i++)
+	for (int i = 0; i < 32;i++)
 	{
 		iVal += pCpuId[i];
 	}
@@ -426,10 +431,10 @@ void read_cfg_settting()
       }
    }
    printf("Key_11111111111111\n");
-   /*if (!bIsKey)
+   if (!bIsKey)
    {
      settings->uints.video_shader_type=0;
-   }*/
+   }
    sprintf(settings->paths.video_shader_path1,"%s",FindInConfig("shader_path1"));
    sprintf(settings->paths.video_shader_path2,"%s",FindInConfig("shader_path2"));
    sprintf(settings->paths.video_shader_path3,"%s",FindInConfig("shader_path3"));
