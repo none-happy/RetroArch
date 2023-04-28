@@ -2038,7 +2038,7 @@ bool runloop_environment_cb(unsigned cmd, void *data)
                unsigned retro_port = desc->port;
                
                retro_id            = desc->id;
-               printf("retro_port:%d-----------------retro_id:%d-----------------------\n",retro_port,retro_id);
+               //printf("retro_port:%d-----------------retro_id:%d-----------------------\n",retro_port,retro_id);
                
                if (desc->port >= MAX_USERS)
                   continue;

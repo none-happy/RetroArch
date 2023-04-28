@@ -398,6 +398,8 @@ void read_cfg_settting()
 {
    settings_t *settings           = config_get_ptr();
    char* ival=FindInConfig("video_shader_type");
+
+   
    //char* ival="";
    if(strcmp(ival,"")!=0)
    {
@@ -407,7 +409,29 @@ void read_cfg_settting()
          settings->uints.video_shader_type=1;
       }
    }
-   
+   ival=FindInConfig("exit_mode");
+   if(strcmp(ival,"")!=0)
+   {
+      settings->uints.Game_Exit_Model=atoi(ival);
+   }
+   ival=FindInConfig("SuspendMenu");
+   if(strcmp(ival,"")!=0)
+   {
+      settings->uints.Game_Show_Menu=atoi(ival);
+   }
+
+   ival=FindInConfig("player_cur_in_coin");
+   if(strcmp(ival,"")!=0)
+   {
+      settings->uints.player_cur_in_coin=atoi(ival);
+   }
+
+   ival=FindInConfig("player_all_in_coin");
+   if(strcmp(ival,"")!=0)
+   {
+      settings->uints.player_all_in_coin=atoi(ival);
+   }
+
   
    ival=FindInConfig("ImageQualityLevel");
    //ival="";
@@ -433,7 +457,7 @@ void read_cfg_settting()
    printf("Key_11111111111111\n");
    if (!bIsKey)
    {
-     settings->uints.video_shader_type=0;
+    // settings->uints.video_shader_type=0;
    }
    sprintf(settings->paths.video_shader_path1,"%s",FindInConfig("shader_path1"));
    sprintf(settings->paths.video_shader_path2,"%s",FindInConfig("shader_path2"));

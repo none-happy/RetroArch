@@ -2789,9 +2789,10 @@ bool core_info_current_supports_savestate(void)
    /* If no core is currently loaded, assume
     * by default that all savestate functionality
     * is supported */
+    printf("happyhappyhappyhappyhappyhappyhappy000:%d\n", (int)p_coreinfo->current);
    if (!p_coreinfo->current)
       return true;
-
+   printf("p_coreinfo->current->retr:%d\n", (int)p_coreinfo->current->savestate_support_level);
    return p_coreinfo->current->savestate_support_level >=
          CORE_INFO_SAVESTATE_BASIC;
 }
@@ -2803,6 +2804,7 @@ bool core_info_current_supports_rewind(void)
    /* If no core is currently loaded, assume
     * by default that all savestate functionality
     * is supported */
+   printf("happyhappyhappyhappyhappyhappyhappy000\n");
    if (!p_coreinfo->current)
       return true;
 

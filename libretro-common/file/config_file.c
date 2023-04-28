@@ -998,10 +998,13 @@ struct config_entry_list *config_get_entry(
 
       //printf("11111");
 
-      bool isRead = ReadConfig(conf_path);
-      if(isRead) {
+      bool isRead = ReadConfig(conf_path);//banty
+      if(isRead) 
+      {
          printf("读取文件成功\n");
-      } else {
+      } 
+      else 
+      {
          printf("读取文件失败\n");
       }
    }

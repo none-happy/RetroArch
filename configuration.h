@@ -328,6 +328,12 @@ typedef struct settings
       unsigned video_autoswitch_refresh_rate;
       unsigned quit_on_close_content;
 
+      unsigned howmuch_coin_one_play;//banty
+      unsigned playgame_time;
+      unsigned player_cur_in_coin;
+      unsigned player_all_in_coin;
+      unsigned Game_Exit_Model;
+      unsigned Game_Show_Menu;
 #ifdef HAVE_LAKKA
       unsigned cpu_scaling_mode;
       unsigned cpu_min_freq;
@@ -957,6 +963,8 @@ typedef struct settings
 #ifdef ANDROID
       bool android_input_disconnect_workaround;
 #endif
+
+      bool play_free_game;//banty
    } bools;
 
 } settings_t;

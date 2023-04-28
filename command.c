@@ -1612,10 +1612,10 @@ bool command_event_main_state(unsigned cmd)
    {
       retroarch_get_current_savestate_path(state_path,
             sizeof(state_path));
-
+      printf("state_pathstate_pathstate_path:%s\n", state_path);
       core_serialize_size(&info);
       savestates_enabled = (info.size > 0);
-      printf("savestates_enabled==true\n");
+      printf("savestates_enabled==true0\n");
    }
    else
    {

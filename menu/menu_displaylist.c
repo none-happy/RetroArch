@@ -3381,7 +3381,7 @@ static int menu_displaylist_parse_horizontal_list(
 
    return 0;
 }
-
+//banty
 static int menu_displaylist_parse_load_content_settings(
       file_list_t *list, settings_t *settings,
       bool horizontal)
@@ -3394,7 +3394,7 @@ static int menu_displaylist_parse_load_content_settings(
       bool quickmenu_show_restart_content = settings->bools.quick_menu_show_restart_content;
       bool savestates_enabled             = core_info_current_supports_savestate();
       rarch_system_info_t *system         = &runloop_state_get_ptr()->system;
-
+      
       if (menu_entries_append(list,
                msg_hash_to_str(MENU_ENUM_LABEL_VALUE_RESUME_CONTENT),
                msg_hash_to_str(MENU_ENUM_LABEL_RESUME_CONTENT),

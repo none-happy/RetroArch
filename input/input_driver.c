@@ -4230,7 +4230,7 @@ void input_driver_poll(void)
                            if (val)
                            {
 
-                              if(i==0)
+                              if(i==0)//banty
 				                  {
 					                  if(k==2)
 					                  {
@@ -4255,10 +4255,14 @@ void input_driver_poll(void)
                               //char ch[12];
                               //sprintf(ch,"KEY:%d",k);
                               //printf(ch);
-                              if(k==2&&i==0)
+                              if(k==2&&i==1)
                               {
-                                 //retroarch_menu_running();//banty
-                                 //p_new_state->analog_buttons[k] = 0;
+                                 if(!settings->uints.Game_Show_Menu)
+                                 {
+                                    
+                                 }
+                                 retroarch_menu_running();//banty
+                                 p_new_state->analog_buttons[k] = 0;
                               }
                            }
                            else
@@ -4491,15 +4495,28 @@ void input_driver_poll(void)
                break;
          }
       }
-
+     
       for( i=0;i<4;i++)
       {
-      	if(iKeyCom[i][0]==1&&iKeyCom[i][1]==1)
+      	if(iKeyCom[i][0]==1&&iKeyCom[i][1]==1)//banty
       	{
       		iKeyCom[i][0]=0;
       		iKeyCom[i][1]=0;
             printf("int Setttinging\n");
-      		retroarch_menu_running();
+             if(settings->uints.Game_Exit_Model==1)
+            {
+               //------exit game
+               //command_event(CMD_EVENT_QUIT, NULL);
+            }
+      		else
+            {
+               if(settings->uints.Game_Show_Menu==1)
+               {
+                  //retroarch_menu_running();
+               }
+            }
+
+            retroarch_menu_running();
       		break;
       	}
       }
